@@ -30,7 +30,7 @@ class TestKMSConstruct(unittest.TestCase):
             "env": "test"
         }
 
-        self.high_level_config = {"test": self.config}
+        self.high_level_config = {"global": self.config}
 
     def test_create_kms_key(self) -> None:
         KMSConstruct.create_kms_key(
