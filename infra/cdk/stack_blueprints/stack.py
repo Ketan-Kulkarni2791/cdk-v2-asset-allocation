@@ -15,13 +15,14 @@ class MainProjectStack(aws_cdk.Stack):
         super().__init__(scope, app_id, **kwargs)
         self.env_var = env_var
         self.config = config
-        MainProjectStack.create_stack(self, self.env_var, config=self.config)
+        MainProjectStack.create_stack(self, config=self.config, env=self.env_var)
 
     @staticmethod
     def create_stack(
-            stack: aws_cdk.Stack, 
-            # env: str, 
-            config: dict) -> None:
+            stack: aws_cdk.Stack,  
+            config: dict,
+            # env: str)
+        )-> None:
         """Create and add the resources to the application stack"""
 
         # KMS infra setup ------------------------------------------------------
