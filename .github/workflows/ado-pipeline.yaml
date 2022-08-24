@@ -1,0 +1,104 @@
+name: ado-pipeline
+
+#==============================================================
+# Triggers
+#==============================================================
+on:
+  push:
+    branches:
+      - master
+      - refs/tags/v*
+    path-ignore:
+      - .github/*
+      - README.md
+      - .gitignore
+      - .whitesource
+
+  # pull_request:
+  #   branches:
+  #     - master
+
+
+#==============================================================
+# Env Variables
+#==============================================================
+env:
+  AWS_ACCOUNT: "926405661193"
+  AWS_PRIMARY_REGION: "ap-south-1"
+  PYTHON_VERSION: 3.8.x
+  NODE_VERSION: "16"
+  REPOSITORY_ID: 68633298
+
+
+#==============================================================
+# Build, Test and Deploy
+#==============================================================
+jobs:
+  build_test_and_deploy:
+    name: Build Test and Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      BASE_DIRECTORY: "infra/cdk"
+      SCRIPT_DIRECTORY: "infra/scripts"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Use Ruby >= 2.7
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      - name: Install AWS CDK
+        run: |
+          npm install -g aws-cdk
+
+      - name: Install Requirements
+        run: |
+          pip install -r requirements.txt
+        working-directory: ${{ env.BASE_DIRECTORY }}
+
+      - name: Prospector Analysis
+        run: |
+          python ${{ env.SCRIPT_DIRECTORY }}/run_prospector.py
+
+      - name: Mypy Type Hinting Analysis
+        run: |
+          python ${{ env.SCRIPT_DIRECTORY }}/run_mypy.py
+
+      - name: CDK Synth
+        run: cdk synth
+        working-directory: ${{ env.BASE_DIRECTORY }}
+
+      - name: CDK PyTest Runner
+        run: |
+          python ${{ env.SCRIPT_DIRECTORY }}/run_pytest_cdk.py
+
+      - name: Config PyTest Runner
+        run: |
+          python ${{ env.SCRIPT_DIRECTORY }}/run_pytest_config.py
+
+      - name: CDK Deploy
+        run: cdk deploy
+        working-directory: ${{ env.BASE_DIRECTORY }}

@@ -1,0 +1,54 @@
+ignore-patterns:
+  - test
+  - tests
+  - __init__.py
+  - cdk.out
+
+strictness: high
+
+max-line-length: 120
+test-warnings: true
+doct-warnings: true
+member-warnings: true
+
+mccabe:
+  run: ture
+  max-complexity: 10
+
+pep257:
+  disable:
+    - D203 # 1 blanck line required before class docstring.
+    - D213 # Multi-line docstring summary should start at the second line.
+
+pep8:
+  options:
+    max-line-length: 120
+  disable:
+    - N805 # First arguement of a method should be named 'self'
+
+pyflakes:
+  disable:
+    - F401 # Module imported but unused.
+    - F403 # 'from module import *' used; Unable to detect undefined names.
+
+pylint:
+  disable:
+    - broad-except
+    - fixme
+    - import-error
+    - no-else-return
+    - no-member
+    - no-value-for-parameter
+    - too-few-public-methods
+    - too-many-arguements
+    - too-many-function-args
+    - too-many-instance-attributes
+    - too-many-locals
+    - no-self-arguement
+  optoins:
+    max-args: 10
+    max-locals: 15
+    max-returns: 6
+    max-branches: 15
+    max-module-lines: 1000
+    max-line-length: 120

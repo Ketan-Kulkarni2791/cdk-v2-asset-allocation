@@ -1,0 +1,8 @@
+[flake8]
+exclude = 
+    .git,
+    __pycache__,
+    venv,
+    tests
+ignore = E501, E128, E125
+max-complexity = 10
