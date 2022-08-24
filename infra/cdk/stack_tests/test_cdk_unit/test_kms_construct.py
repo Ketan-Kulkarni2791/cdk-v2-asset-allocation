@@ -9,7 +9,7 @@ from infra.cdk.stack_blueprints.kms_construct import KMSConstruct
 class TestKMSConstruct(unittest.TestCase):
     """KMS Construct testing class."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         self.addCleanup(patch.stopall)
         self.mocked_stack = Mock()
         
@@ -32,7 +32,7 @@ class TestKMSConstruct(unittest.TestCase):
 
         self.high_level_config = {"test": self.config}
 
-    def test_create_kms_key(self):
+    def test_create_kms_key(self) -> None:
         KMSConstruct.create_kms_key(
             self.mocked_stack,
             self.high_level_config,
