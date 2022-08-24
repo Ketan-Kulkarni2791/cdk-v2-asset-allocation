@@ -99,6 +99,6 @@ jobs:
         run: |
           python ${{ env.SCRIPT_DIRECTORY }}/run_pytest_config.py
 
-      - name: CDK Deploy
+      - name: CDK Deploy --require-approval "never"
         run: cdk deploy
         working-directory: ${{ env.BASE_DIRECTORY }}
