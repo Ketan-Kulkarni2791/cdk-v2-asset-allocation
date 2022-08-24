@@ -1,5 +1,5 @@
 """Module to hold helper methods for CDK IAM creation"""
-from typing import List
+# from typing import List
 # from aws_cdk import Stack
 import aws_cdk.aws_iam as iam
 
