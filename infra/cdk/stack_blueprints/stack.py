@@ -15,7 +15,7 @@ class MainProjectStack(aws_cdk.Stack):
         super().__init__(scope, app_id, **kwargs)
         self.env_var = env_var
         self.config = config
-        MainProjectStack.create_stack(self, self.env_var, config=config)
+        MainProjectStack.create_stack(self, self.env_var, config=self.config)
 
     @staticmethod
     def create_stack(
