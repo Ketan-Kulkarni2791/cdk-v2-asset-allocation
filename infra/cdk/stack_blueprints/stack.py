@@ -4,6 +4,7 @@ import aws_cdk
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_kms as kms
 import aws_cdk.aws_lambda as _lambda
+import aws_cdk.aws_s3 as s3
 from constructs import Construct
 
 from .iam_construct import IAMConstruct
@@ -20,12 +21,13 @@ class MainProjectStack(aws_cdk.Stack):
         super().__init__(scope, app_id, **kwargs)
         self.env_var = env_var
         self.config = config
-        MainProjectStack.create_stack(self, config=self.config)
+        MainProjectStack.create_stack(self, config=self.config, env=self.env_var)
 
     @staticmethod
     def create_stack(
             stack: aws_cdk.Stack,  
-            config: dict) -> None:
+            config: dict,
+            env: str) -> None:
         """Create and add the resources to the application stack"""
 
         # KMS infra setup ------------------------------------------------------
@@ -53,7 +55,14 @@ class MainProjectStack(aws_cdk.Stack):
             # env=env,
             kms_key=kms_key
         )
-        print(lambdas)
+
+        # S3 Bucket Infra Setup --------------------------------------------------
+        MainProjectStack.create_bucket(
+            config=config,
+            env=env,
+            stack=stack,
+            function=lambdas["validation_trigger_lambda"]
+        )
 
     @staticmethod
     def create_stack_role(
@@ -130,3 +139,26 @@ class MainProjectStack(aws_cdk.Stack):
         )
 
         return lambdas
+
+    @staticmethod
+    def create_bucket(
+            config: dict,
+            env: str,
+            stack: aws_cdk.Stack,
+            function: Dict[str, _lambda.Function]) -> s3.Bucket:
+        """Create an encrypted s3 bucket."""
+
+        print(env)
+        s3_bucket = S3Construct.create_bucket(
+            stack=stack,
+            bucket_id=f"moving-incoming-files-{config['global']['env']}",
+            bucket_name=config['global']['bucket_name']
+        )
+
+        S3Construct.create_lambda_trigger(
+            bucket=s3_bucket,
+            prefix=config["global"]["triggerPrefix"],
+            suffix=config["global"]["triggerSuffix"],
+            function=function,
+            event_type=s3.EventType.OBJECT_CREATED
+        )  
