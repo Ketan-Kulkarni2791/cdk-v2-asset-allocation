@@ -26,7 +26,7 @@ class TestKMSConstruct(unittest.TestCase):
         iam.PolicyStatement.return_value.add_resources = MagicMock()
 
         self.config = {
-            "appName": "test-app-name",
+            "app-name": "test-app-name",
             "env": "test"
         }
 
@@ -41,8 +41,8 @@ class TestKMSConstruct(unittest.TestCase):
 
         self.mock_kms_key.assert_called_once_with(
             scope=self.mocked_stack,
-            id=f"{self.config['appName']}-keyId",
-            alias=f"{self.config['appName']}-kms",
+            id=f"{self.config['app-name']}-keyId",
+            alias=f"{self.config['app-name']}-kms",
             enabled=True,
             policy=self.mock_policy_doc
         )
