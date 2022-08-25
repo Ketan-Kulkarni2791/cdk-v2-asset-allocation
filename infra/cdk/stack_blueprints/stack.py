@@ -151,7 +151,7 @@ class MainProjectStack(aws_cdk.Stack):
         print(env)
         s3_bucket = S3Construct.create_bucket(
             stack=stack,
-            bucket_id=f"moving-incoming-files-{config['global']['env']}",
+            bucket_id=f"asset-allocation-{config['global']['env']}",
             bucket_name=config['global']['bucket_name']
         )
 
