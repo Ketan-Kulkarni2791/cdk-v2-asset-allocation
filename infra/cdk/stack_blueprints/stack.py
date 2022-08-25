@@ -70,5 +70,4 @@ class MainProjectStack(aws_cdk.Stack):
             assumed_by=["s3", "lambda"]
         )
         stack_role.add_managed_policy(policy=stack_policy)
-        return stack_role
-        
+        return stack_role  

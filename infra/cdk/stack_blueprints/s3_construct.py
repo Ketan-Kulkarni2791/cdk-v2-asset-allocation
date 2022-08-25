@@ -1,7 +1,7 @@
 """Code for generation and deployment of s3 resources."""
-from aws_cdk import Stack, Duration
+# from aws_cdk import Stack, Duration
 import aws_cdk.aws_iam as iam
-import aws_cdk.aws_s3 as s3
+# import aws_cdk.aws_s3 as s3
 
 
 class S3Construct:
@@ -25,5 +25,4 @@ class S3Construct:
         policy_statement.add_actions("s3:GetBucket*")
         policy_statement.add_resources(f"{s3_bucket_arns}")
         policy_statement.add_resources(f"{s3_bucket_arns}/*")
-        return policy_statement
-    
+        return policy_statement   
