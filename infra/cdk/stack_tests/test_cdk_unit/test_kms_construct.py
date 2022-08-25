@@ -47,7 +47,7 @@ class TestKMSConstruct(unittest.TestCase):
             policy=self.mock_policy_doc
         )
 
-    def test_get_kms_key_encrypt_decrypt_policy():
+    def test_get_kms_key_encrypt_decrypt_policy(self) -> None:
         action_call = [
             call("kms:Decrept"),
             call("kms:Encrypt"),
