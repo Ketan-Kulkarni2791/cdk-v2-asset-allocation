@@ -25,4 +25,17 @@ class S3Construct:
         policy_statement.add_actions("s3:GetBucket*")
         policy_statement.add_resources(f"{s3_bucket_arns}")
         policy_statement.add_resources(f"{s3_bucket_arns}/*")
-        return policy_statement   
+        return policy_statement
+
+    @staticmethod
+    def get_s3_bucket_policy(s3_bucket_arns: str) -> iam.PolicyStatement:
+        """Returns policy statement for reading from S3 bucket."""
+        policy_statement = iam.PolicyStatement()
+        policy_statement.effect = iam.Effect.ALLOW
+        policy_statement.add_actions("s3:GetBucket*")
+        policy_statement.add_actions("s3:PutBucket")
+        policy_statement.add_actions("s3:ListBucket")
+        policy_statement.add_actions("s3:GetBucketLocation")
+        policy_statement.add_actions("s3:GetObject")
+        policy_statement.add_resources(s3_bucket_arns)
+        return policy_statement
