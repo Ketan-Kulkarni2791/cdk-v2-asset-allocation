@@ -66,7 +66,7 @@ class S3Construct:
         policy_statement.add_actions("s3:DeleteObject*")
         policy_statement.add_actions("s3:GetObject*")
         policy_statement.add_actions("s3:PutObject*")
-        policy_statement.add_actions("s3:ReplicateTags")
+        # policy_statement.add_actions("s3:ReplicateTags")
         policy_statement.add_actions("s3:ListBucket")
         policy_statement.add_actions("s3:GetBucketLocation")
         policy_statement.add_actions("s3:AbortMultipartUpload")
