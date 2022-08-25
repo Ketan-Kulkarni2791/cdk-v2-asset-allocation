@@ -6,11 +6,11 @@ Returns-
     [dict]:
 
 """
-import os
-from datetime import datetime
+# import os
 import logging
 
 logging.getLogger().setLevel(logging.INFO)
+
 
 def lambda_handler(event: dict, _context: dict) -> dict:
     """Main lambda handler for Incoming Data to S3 Transform Location Lambda."""
