@@ -46,3 +46,21 @@ class TestKMSConstruct(unittest.TestCase):
             enabled=True,
             policy=self.mock_policy_doc
         )
+
+    def test_get_kms_key_encrypt_decrypt_policy():
+        action_call = [
+            call("kms:Decrept"),
+            call("kms:Encrypt"),
+            call("kms:ReEncrypt*"),
+            call("kms:GenerateDataKey*"),
+            call("kms:DescribeKey")
+        ]
+        resources_calls = [call("fake_key_0"), call("fake_key_1")]
+
+        KMSConstruct.get_kms_key_encrypt_decrypt_policy(["fake_key_0", "fake_key_1"])
+
+        iam.PolicyStatement.assert_called_once_with()
+        iam.PolicyStatement.return_value.add_actions.assert_has_calls(action_call, any_order=True)
+        iam.PolicyStatement.return_value.add_resources.assert_has_calls(resources_calls, any_order=True)
+
+        
