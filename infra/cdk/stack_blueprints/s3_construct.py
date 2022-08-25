@@ -2,7 +2,6 @@
 from aws_cdk import Stack, Duration
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_s3 as s3
-import aws_cdk.aws_kms as kms
 import aws_cdk.aws_lambda as _lambda
 import aws_cdk.aws_s3_notifications as aws_s3_notifications
 
@@ -57,7 +56,6 @@ class S3Construct:
 
         lambda_dest = aws_s3_notifications.LambdaDestination(function)
         bucket.add_event_notification(event_type, lambda_dest, outbound_filters)
-        
 
     @staticmethod
     def get_s3_object_policy(s3_bucket_arns: str) -> iam.PolicyStatement:
