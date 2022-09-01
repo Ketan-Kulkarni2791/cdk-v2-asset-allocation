@@ -49,7 +49,7 @@ class LambdaConstruct:
             "runtime": aws_lambda.Runtime.PYTHON_3_8,
             "role": role,
             "environment": env_vars,
-            "architecture": aws_lambda.Architecture.ARM_64,
+            "architecture": aws_lambda.Architecture.X86_64,
             "timeout": duration,
             "log_retention": aws_logs.RetentionDays.THREE_MONTHS
         }

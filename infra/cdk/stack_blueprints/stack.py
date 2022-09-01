@@ -11,6 +11,7 @@ from .iam_construct import IAMConstruct
 from .kms_construct import KMSConstruct
 from .s3_construct import S3Construct
 from .lambda_construct import LambdaConstruct
+from .lambda_layer_construct import LambdaLayerConstruct
 
 
 class MainProjectStack(aws_cdk.Stack):
@@ -48,12 +49,19 @@ class MainProjectStack(aws_cdk.Stack):
         )
         print(stack_role)
 
+        # Lambda Layers --------------------------------------------------------
+        layer = MainProjectStack.create_layers_for_lambdas(
+            stack=stack,
+            config=config
+        )
+
         # Infra for Lambda function creation -------------------------------------
         lambdas = MainProjectStack.create_lambda_functions(
             stack=stack,
             config=config,
             # env=env,
-            kms_key=kms_key
+            kms_key=kms_key,
+            layer=layer
         )
 
         # S3 Bucket Infra Setup --------------------------------------------------
@@ -93,11 +101,29 @@ class MainProjectStack(aws_cdk.Stack):
         return stack_role
 
     @staticmethod
+    def create_layers_for_lambdas(
+        stack: aws_cdk.Stack,
+        config: dict) -> Dict[str, _lambda.LayerVersion]:
+        """Method to create layers."""
+        layers = {}
+        # requirement layer for general ----------------------------------------------------
+        layers["requirement_layer"] = LambdaLayerConstruct.create_lambda_layer(
+            stack=stack,
+            config=config,
+            layer_name="requirement_layer",
+            compatible_runtimes=[
+                _lambda.Runtime.PYTHON_3_8
+            ]
+        )
+        return layers
+
+    @staticmethod
     def create_lambda_functions(
             stack: aws_cdk.Stack,
             config: dict,
             # env: str,
-            kms_key: kms.Key) -> Dict[str, _lambda.Function]:
+            kms_key: kms.Key,
+            layer: Dict[str, _lambda.LayerVersion] = None) -> Dict[str, _lambda.Function]:
         """Create placeholder lambda function and roles."""
 
         lambdas = {}
@@ -134,6 +160,7 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             # env=env,
             lambda_name="validation_trigger_lambda",
+            layer=[layer["requirement_layer"]]
             role=validation_trigger_role,
             duration=aws_cdk.Duration.minutes(15)
         )

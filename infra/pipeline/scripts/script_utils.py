@@ -4,7 +4,7 @@ import logging
 import os
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent.parent.parent
+ROOT_DIR = Path(__file__).parent.parent.parent.parent
 
 
 def get_path_for_file(input_file: str) -> bytes:

@@ -1,6 +1,5 @@
 aws-cdk-lib==2.16.0
 constructs==10.0.0
-pandas
 flake8
 mypy
 prospector==1.3.1

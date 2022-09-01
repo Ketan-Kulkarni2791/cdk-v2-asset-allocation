@@ -1,0 +1,5 @@
+pandas
+aws-psycopg2==1.2.1
+openpyxl
+fsspec
+s3fs
