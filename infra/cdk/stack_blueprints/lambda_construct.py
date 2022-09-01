@@ -14,7 +14,6 @@ class LambdaConstruct:
     def create_lambda(
             stack: Stack,
             config: dict,
-            # env: str,
             lambda_name: str,
             role: iam.Role,
             layer: List[aws_lambda.LayerVersion] = None,
@@ -26,6 +25,7 @@ class LambdaConstruct:
             config=config,
             lambda_name=lambda_name,
             role=role,
+            layer=layer,
             duration=duration
         )
 
@@ -35,7 +35,8 @@ class LambdaConstruct:
             config: dict,
             lambda_name: str,
             role: iam.Role,
-            duration: Duration) -> aws_lambda.Function:
+            duration: Duration,
+            layer: List[aws_lambda.LayerVersion] = None) -> aws_lambda.Function:
         """Methods for generic lambda creation."""
 
         env_vars = json.loads(config['global'][f"{lambda_name}Environment"])
@@ -55,6 +56,8 @@ class LambdaConstruct:
             "timeout": duration,
             "log_retention": aws_logs.RetentionDays.THREE_MONTHS
         }
+        if layer:
+            dict_props['layers'] = layer
 
         return aws_lambda.Function(scope=stack, id=function_id, **dict_props)        
 
