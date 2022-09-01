@@ -102,8 +102,8 @@ class MainProjectStack(aws_cdk.Stack):
 
     @staticmethod
     def create_layers_for_lambdas(
-        stack: aws_cdk.Stack,
-        config: dict) -> Dict[str, _lambda.LayerVersion]:
+            stack: aws_cdk.Stack,
+            config: dict) -> Dict[str, _lambda.LayerVersion]:
         """Method to create layers."""
         layers = {}
         # requirement layer for general ----------------------------------------------------

@@ -1,5 +1,6 @@
 """Code for generation and deploy lambda to AWS"""
 import json
+from typing import List
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_lambda as aws_lambda
 import aws_cdk.aws_logs as aws_logs
@@ -16,6 +17,7 @@ class LambdaConstruct:
             # env: str,
             lambda_name: str,
             role: iam.Role,
+            layer: List[aws_lambda.LayerVersion] = None,
             duration: Duration = None) -> aws_lambda.Function:
         """Method called by construct for creating lambda."""
 
