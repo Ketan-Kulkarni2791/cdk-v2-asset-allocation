@@ -1,3 +1,2 @@
 pandas
-aws-psycopg2==1.2.1
 s3fs
