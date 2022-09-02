@@ -8,15 +8,17 @@ logging.getLogger().setLevel(logging.INFO)
 ROOT_DIR = os.getcwd()
 logging.info("Starting script in %s", ROOT_DIR)
 
+
 def get_src_directory():
     """Get relative path to /src location."""
-    # pylint: disable-inconsistent-return-statement,unused-variable
+    # pylint: disable=inconsistent-return-statement,unused-variable
     logging.info("Getting path to /src location.")
-    for dirname, dirnames, filenames in os.walk(ROOT_DIR):
+    for dirname, dirnames in os.walk(ROOT_DIR):
         for source_dir in dirnames:
             if source_dir == "src":
                 return os.path.join(dirname, source_dir)
     return None
+
 
 def get_lambda_directories(top_level_dir: bytes) -> List[AnyStr]:
     """Get a list of all directories in src."""
@@ -25,6 +27,7 @@ def get_lambda_directories(top_level_dir: bytes) -> List[AnyStr]:
     for subdir in os.scandir(top_level_dir):
         dir_paths.append(os.path.abspath(subdir))
     return dir_paths
+
 
 # noinspection PyTypeChecker
 def install_packages(directory_path) -> None:
@@ -35,7 +38,8 @@ def install_packages(directory_path) -> None:
     os.chdir(directory_path)
     logging.info("Installing dependencies for deployment.")
     os.system("python -m pip install -r requirements-app.txt -t .")
-    
+
+
 # noinspection PyTypeChecker
 def main() -> None:
     """Top level method for installing packages required by lambda layers."""
