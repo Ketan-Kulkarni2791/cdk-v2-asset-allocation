@@ -16,8 +16,7 @@ class LambdaConstruct:
             config: dict,
             lambda_name: str,
             role: iam.Role,
-            layer: List[aws_lambda.LayerVersion] = None,
-            duration: Duration = None) -> aws_lambda.Function:
+            layer: List[aws_lambda.LayerVersion] = None) -> aws_lambda.Function:
         """Method called by construct for creating lambda."""
 
         return LambdaConstruct.create_lambda_function(
@@ -25,8 +24,7 @@ class LambdaConstruct:
             config=config,
             lambda_name=lambda_name,
             role=role,
-            layer=layer,
-            duration=duration
+            layer=layer
         )
 
     @staticmethod
@@ -35,7 +33,6 @@ class LambdaConstruct:
             config: dict,
             lambda_name: str,
             role: iam.Role,
-            duration: Duration = None,
             layer: List[aws_lambda.LayerVersion] = None) -> aws_lambda.Function:
         """Methods for generic lambda creation."""
 
@@ -53,7 +50,6 @@ class LambdaConstruct:
             "role": role,
             "environment": env_vars,
             "architecture": aws_lambda.Architecture.X86_64,
-            "timeout": duration,
             "log_retention": aws_logs.RetentionDays.THREE_MONTHS
         }
         if layer:
