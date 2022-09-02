@@ -9,7 +9,7 @@ ROOT_DIR = os.getcwd()
 logging.info("Starting script in %s", ROOT_DIR)
 
 
-def get_src_directory()  -> str:
+def get_src_directory() -> None:
     """Get relative path to /src location."""
     # pylint: disable=inconsistent-return-statements,unused-variable
     logging.info("Getting path to /src location.")
@@ -17,6 +17,7 @@ def get_src_directory()  -> str:
         for source_dir in dirnames:
             if source_dir == "src":
                 return os.path.join(dirname, source_dir)
+    return None
 
 
 def get_lambda_directories(top_level_dir: bytes) -> List[AnyStr]:
