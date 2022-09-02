@@ -9,7 +9,7 @@ ROOT_DIR = os.getcwd()
 logging.info("Starting script in %s", ROOT_DIR)
 
 
-def get_src_directory():
+def get_src_directory() -> None:
     """Get relative path to /src location."""
     # pylint: disable=inconsistent-return-statements,unused-variable
     logging.info("Getting path to /src location.")
@@ -38,6 +38,7 @@ def install_packages(directory_path) -> None:
     os.chdir(directory_path)
     logging.info("Installing dependencies for deployment.")
     os.system("python -m pip install -r requirements-app.txt -t .")
+    return None
 
 
 # noinspection PyTypeChecker
