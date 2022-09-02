@@ -158,7 +158,6 @@ class MainProjectStack(aws_cdk.Stack):
         lambdas["validation_trigger_lambda"] = LambdaConstruct.create_lambda(
             stack=stack,
             config=config,
-            # env=env,
             lambda_name="validation_trigger_lambda",
             layer=[layer["requirement_layer"]],
             role=validation_trigger_role,
