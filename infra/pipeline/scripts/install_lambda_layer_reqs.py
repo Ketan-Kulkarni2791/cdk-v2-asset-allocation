@@ -7,7 +7,7 @@ from typing import AnyStr, List
 
 from script_utils import get_path_for_directory
 
-logging.getLogger.setLevel(logging.INFO)
+logging.getLogger().setLevel(logging.INFO)
 
 
 def main() -> None:
