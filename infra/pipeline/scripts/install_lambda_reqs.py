@@ -9,7 +9,7 @@ ROOT_DIR = os.getcwd()
 logging.info("Starting script in %s", ROOT_DIR)
 
 
-def get_src_directory():
+def get_src_directory()  -> str:
     """Get relative path to /src location."""
     # pylint: disable=inconsistent-return-statements,unused-variable
     logging.info("Getting path to /src location.")
