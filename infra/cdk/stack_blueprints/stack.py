@@ -159,8 +159,8 @@ class MainProjectStack(aws_cdk.Stack):
             stack=stack,
             config=config,
             lambda_name="validation_trigger_lambda",
-            layer=[layer["requirement_layer"]],
             role=validation_trigger_role,
+            layer=[layer["requirement_layer"]],
             duration=aws_cdk.Duration.minutes(15)
         )
 
