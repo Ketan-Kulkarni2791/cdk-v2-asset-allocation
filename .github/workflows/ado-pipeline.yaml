@@ -83,9 +83,9 @@ jobs:
         run: |
           python ${{ env.SCRIPT_DIRECTORY }}/run_prospector.py
 
-      - name: Mypy Type Hinting Analysis
-        run: |
-          python ${{ env.SCRIPT_DIRECTORY }}/run_mypy.py
+      # - name: Mypy Type Hinting Analysis
+      #   run: |
+      #     python ${{ env.SCRIPT_DIRECTORY }}/run_mypy.py
 
       - name: Install Lambda Layer Requirements
         run: |
