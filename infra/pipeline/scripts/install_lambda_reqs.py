@@ -30,7 +30,7 @@ def get_lambda_directories(top_level_dir: bytes) -> List[AnyStr]:
 
 
 # noinspection PyTypeChecker
-def install_packages(directory_path) -> None:
+def install_packages(directory_path):
     """Installing packages required for lambda."""
     logging.info("Begginning installation activities for %s", directory_path.rsplit('/', 1)[-1])
     # Navigate to the directory
@@ -38,7 +38,6 @@ def install_packages(directory_path) -> None:
     os.chdir(directory_path)
     logging.info("Installing dependencies for deployment.")
     os.system("python -m pip install -r requirements-app.txt -t .")
-    return None
 
 
 # noinspection PyTypeChecker
