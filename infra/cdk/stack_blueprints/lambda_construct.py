@@ -10,6 +10,7 @@ from aws_cdk import Stack
 class LambdaConstruct:
     """Class with static methods that are used to build and deploy lambdas."""
 
+    #pylint: disable=too-many-arguments
     @staticmethod
     def create_lambda(
             stack: Stack,
