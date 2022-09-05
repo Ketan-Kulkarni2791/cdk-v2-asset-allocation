@@ -160,7 +160,8 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             lambda_name="validation_trigger_lambda",
             role=validation_trigger_role,
-            layer=[layer["requirement_layer"]]
+            layer=[layer["requirement_layer"]],
+            memory_size=10240
         )
 
         return lambdas
