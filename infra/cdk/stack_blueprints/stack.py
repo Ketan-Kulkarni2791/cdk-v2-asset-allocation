@@ -174,7 +174,7 @@ class MainProjectStack(aws_cdk.Stack):
                 )
             ]
         )
-      
+
         pl_1_role = IAMConstruct.create_role(
             stack=stack,
             config=config,
