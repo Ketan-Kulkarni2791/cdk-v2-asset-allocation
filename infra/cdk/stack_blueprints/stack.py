@@ -163,6 +163,35 @@ class MainProjectStack(aws_cdk.Stack):
             memory_size=3008
         )
 
+        # Placeholder Lambda 1. ----------------------------------------------------
+        pl_1_lambda_policy = IAMConstruct.create_managed_policy(
+            stack=stack,
+            config=config,
+            policy_name="pl_1_lambda",
+            statements=[
+                LambdaConstruct.get_cloudwatch_policy(
+                    config['global']['pl_1_lambdaLogsArn']
+                )
+            ]
+        )
+        
+        pl_1_role = IAMConstruct.create_role(
+            stack=stack,
+            config=config,
+            role_name="pl_1_lambda",
+            assumed_by=['sqs', 'lambda', 'sns']
+        )
+        pl_1_role.add_managed_policy(pl_1_lambda_policy)
+
+        lambdas["pl_1_lambda"] = LambdaConstruct.create_lambda(
+            stack=stack,
+            config=config,
+            lambda_name="pl_1_lambda",
+            role=pl_1_role,
+            layer=None,
+            memory_size=3008
+        )
+
         return lambdas
 
     @staticmethod
