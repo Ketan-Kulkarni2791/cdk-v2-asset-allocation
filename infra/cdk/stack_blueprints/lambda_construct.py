@@ -35,7 +35,7 @@ class LambdaConstruct:
             config: dict,
             lambda_name: str,
             role: iam.Role,
-            memory_size: int,
+            memory_size: int = None,
             layer: List[aws_lambda.LayerVersion] = None) -> aws_lambda.Function:
         """Methods for generic lambda creation."""
 
