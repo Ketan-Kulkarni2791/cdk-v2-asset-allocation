@@ -3,7 +3,7 @@ from aws_cdk import Stack
 import aws_cdk.aws_kms as kms
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_sns as sns
-import aws_cdk.aws_sns_subcriptions as aws_sns_subcriptions
+import aws_cdk.aws_sns_subcriptions as aws_sns_subscriptions
 
 
 class SNSConstruct:
@@ -11,9 +11,9 @@ class SNSConstruct:
 
     @staticmethod
     def create_sns_topic(
-        stack: Stack,
-        config: dict,
-        kms_key: kms.Key) -> sns.Topic:
+            stack: Stack,
+            config: dict,
+            kms_key: kms.Key) -> sns.Topic:
         """Creates SNS Topic and adds to the input stack."""
         return sns.Topic(
             scope=stack,
@@ -26,7 +26,7 @@ class SNSConstruct:
     def subscribe_email(config: dict, topic: sns.Topic) -> None:
         """Creates SNS email subscription to the input topic."""
         topic.add_subscription(
-            aws_sns_subcriptions.EmailSubscription(
+            aws_sns_subscriptions.EmailSubscription(
                 email_address=config['global']['email']
             )
         )
