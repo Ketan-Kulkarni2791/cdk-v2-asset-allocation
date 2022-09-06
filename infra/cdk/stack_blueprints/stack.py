@@ -94,9 +94,9 @@ class MainProjectStack(aws_cdk.Stack):
 
     @staticmethod
     def setup_sns_topic(
-        config: dict,
-        kms_key: kms.Key,
-        stack: aws_cdk.Stack) -> sns.Topic:
+            config: dict,
+            kms_key: kms.Key,
+            stack: aws_cdk.Stack) -> sns.Topic:
         """Set up the SNS Topic and returns the SNS Topic Object."""
         sns_topic = SNSConstruct.create_sns_topic(
             stack=stack,

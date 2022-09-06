@@ -3,7 +3,7 @@ from aws_cdk import Stack
 import aws_cdk.aws_kms as kms
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_sns as sns
-import aws_cdk.aws_sns_subcriptions as aws_sns_subscriptions
+import aws_cdk.aws_sns_subscriptions as aws_sns_subscriptions
 
 
 class SNSConstruct:
