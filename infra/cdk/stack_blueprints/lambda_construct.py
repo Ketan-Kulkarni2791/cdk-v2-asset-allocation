@@ -17,9 +17,15 @@ class LambdaConstruct:
             config: dict,
             lambda_name: str,
             role: iam.Role,
+            sns_arn: str = None,
             layer: List[aws_lambda.LayerVersion] = None,
             memory_size: int = None) -> aws_lambda.Function:
         """Method called by construct for creating lambda."""
+
+        env_vars = json.loads(config['global'][f"{lambda_name}Environment"])
+
+        if sns_arn:
+            env_vars["sns_arn"] = sns_arn
 
         return LambdaConstruct.create_lambda_function(
             stack=stack,
@@ -27,6 +33,7 @@ class LambdaConstruct:
             lambda_name=lambda_name,
             role=role,
             layer=layer,
+            env_vars=env_vars,
             memory_size=memory_size
         )
 
@@ -36,11 +43,11 @@ class LambdaConstruct:
             config: dict,
             lambda_name: str,
             role: iam.Role,
+            env_vars: dict,
             memory_size: int = None,
             layer: List[aws_lambda.LayerVersion] = None) -> aws_lambda.Function:
         """Methods for generic lambda creation."""
 
-        env_vars = json.loads(config['global'][f"{lambda_name}Environment"])
         lambda_path = config['global'][f"{lambda_name}HndlrPath"]
         handler = config['global'][f"{lambda_name}Hndlr"]
         function_id = f"{config['global']['app-name']}-{lambda_name}-Id"

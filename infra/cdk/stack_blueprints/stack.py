@@ -5,6 +5,7 @@ import aws_cdk.aws_iam as iam
 import aws_cdk.aws_kms as kms
 import aws_cdk.aws_lambda as _lambda
 import aws_cdk.aws_s3 as s3
+import aws_cdk.aws_sns as sns
 from constructs import Construct
 
 from .iam_construct import IAMConstruct
@@ -12,6 +13,7 @@ from .kms_construct import KMSConstruct
 from .s3_construct import S3Construct
 from .lambda_construct import LambdaConstruct
 from .lambda_layer_construct import LambdaLayerConstruct
+from .sns_construct import SNSConstruct
 
 
 class MainProjectStack(aws_cdk.Stack):
@@ -41,11 +43,19 @@ class MainProjectStack(aws_cdk.Stack):
         )
         print(kms_key)
 
+        # SNS Infra Setup -----------------------------------------------------
+        sns_topic = MainProjectStack.setup_sns_topic(
+            config,
+            kms_key,
+            stack
+        )
+
         # IAM Role Setup --------------------------------------------------------
         stack_role = MainProjectStack.create_stack_role(
             config=config,
             stack=stack,
-            kms_key=kms_key
+            kms_key=kms_key,
+            sns_topic=sns_topic
         )
         print(stack_role)
 
@@ -61,7 +71,8 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             # env=env,
             kms_key=kms_key,
-            layer=layer
+            layer=layer,
+            sns_topic=sns_topic
         )
 
         # S3 Bucket Infra Setup --------------------------------------------------
@@ -72,11 +83,35 @@ class MainProjectStack(aws_cdk.Stack):
             function=lambdas["validation_trigger_lambda"]
         )
 
+        # # Step Function Infra Creation -------------------------------------------
+        # MainProjectStack.create_step_fnction(
+        #     stack=stack,
+        #     config=config,
+        #     # env=env,
+        #     kms_key=kms_key,
+        #     lambdas=lambdas
+        # )
+
+    @staticmethod
+    def setup_sns_topic(
+        config: dict,
+        kms_key: kms.Key,
+        stack: aws_cdk.Stack) -> sns.Topic:
+        """Set up the SNS Topic and returns the SNS Topic Object."""
+        sns_topic = SNSConstruct.create_sns_topic(
+            stack=stack,
+            config=config,
+            kms_key=kms_key
+        )
+        SNSConstruct.subscribe_email(config=config, topic=sns_topic)
+        return sns_topic
+
     @staticmethod
     def create_stack_role(
         config: dict,
         stack: aws_cdk.Stack,
-        kms_key: kms.Key
+        kms_key: kms.Key,
+        sns_topic: sns.Topic
     ) -> iam.Role:
         """Create the IAM role."""
 
@@ -89,6 +124,7 @@ class MainProjectStack(aws_cdk.Stack):
                     [kms_key.key_arn]
                 ),
                 S3Construct.get_s3_object_policy([config['global']['bucket_arn']]),
+                SNSConstruct.get_sns_publish_policy(sns_topic.topic_arn)
             ]
         )
         stack_role = IAMConstruct.create_role(
@@ -122,6 +158,7 @@ class MainProjectStack(aws_cdk.Stack):
             stack: aws_cdk.Stack,
             config: dict,
             kms_key: kms.Key,
+            sns_topic: sns.Topic,
             layer: Dict[str, _lambda.LayerVersion] = None) -> Dict[str, _lambda.Function]:
         """Create placeholder lambda function and roles."""
 
@@ -141,7 +178,8 @@ class MainProjectStack(aws_cdk.Stack):
                 ),
                 S3Construct.get_s3_object_policy(config['global']['bucket_arn']),
                 S3Construct.get_s3_bucket_policy(config['global']['bucket_arn']),
-                KMSConstruct.get_kms_key_encrypt_decrypt_policy([kms_key.key_arn])
+                KMSConstruct.get_kms_key_encrypt_decrypt_policy([kms_key.key_arn]),
+                SNSConstruct.get_sns_publish_policy(sns_topic.topic_arn)
             ]
         )
 
@@ -159,6 +197,7 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             lambda_name="validation_trigger_lambda",
             role=validation_trigger_role,
+            sns_arn=sns_topic.topic_arn,
             layer=[layer["requirement_layer"]],
             memory_size=3008
         )
