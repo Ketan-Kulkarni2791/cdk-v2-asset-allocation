@@ -83,8 +83,8 @@ class MainProjectStack(aws_cdk.Stack):
             function=lambdas["validation_trigger_lambda"]
         )
 
-        # # Step Function Infra Creation -------------------------------------------
-        # MainProjectStack.create_step_fnction(
+        # Step Function Infra Creation -------------------------------------------
+        # MainProjectStack.create_step_function(
         #     stack=stack,
         #     config=config,
         #     # env=env,
@@ -260,6 +260,44 @@ class MainProjectStack(aws_cdk.Stack):
             memory_size=3008
         )
 
+        # Clear Files on Alert Lambda. ----------------------------------------------------
+        clear_files_on_alert_lambda_policy = IAMConstruct.create_managed_policy(
+            stack=stack,
+            config=config,
+            policy_name="alert_lambda",
+            statements=[
+                LambdaConstruct.get_cloudwatch_policy(
+                    LambdaConstruct.get_cloudwatch_policy(
+                        config["global"]["clearFileslambdaLogsArn"]
+                    )
+                ),
+                KMSConstruct.get_kms_key_encrypt_decrypt_policy([kms_key.key_arn]),
+                SNSConstruct.get_sns_publish_policy(sns_topic.topic_arn),
+                S3Construct.get_s3_bucket_policy(
+                    [config["global"]["bucket_arn"]]
+                ),
+                S3Construct.get_s3_object_policy(
+                    [config["global"]["bucket_arn"]]
+                )
+            ]
+        )
+        clear_files_on_alert_lambda_role = IAMConstruct.create_role(
+            stack=stack,
+            config=config,
+            role_name="alert_lambda",
+            assumed_by=['sqs', 'lambda']
+        )
+        clear_files_on_alert_lambda_role.add_managed_policy(
+            clear_files_on_alert_lambda_policy
+        )
+        lambdas["clear_files_alert_lambda"] = LambdaConstruct.create_lambda(
+            stack=stack,
+            config=config,
+            lambda_name="clearFilesLambda",
+            role=clear_files_on_alert_lambda_role,
+            sns_arn=sns_topic.topic_arn
+        )
+
         return lambdas
 
     @staticmethod
@@ -283,4 +321,4 @@ class MainProjectStack(aws_cdk.Stack):
             suffix=config["global"]["triggerSuffix"],
             function=function,
             event_type=s3.EventType.OBJECT_CREATED
-        )  
+        )
