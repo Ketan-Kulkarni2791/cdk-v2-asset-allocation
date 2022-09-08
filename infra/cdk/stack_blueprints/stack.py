@@ -267,9 +267,7 @@ class MainProjectStack(aws_cdk.Stack):
             policy_name="alert_lambda",
             statements=[
                 LambdaConstruct.get_cloudwatch_policy(
-                    LambdaConstruct.get_cloudwatch_policy(
-                        config["global"]["clearFileslambdaLogsArn"]
-                    )
+                    config["global"]["clearFileslambdaLogsArn"]
                 ),
                 KMSConstruct.get_kms_key_encrypt_decrypt_policy([kms_key.key_arn]),
                 SNSConstruct.get_sns_publish_policy(sns_topic.topic_arn),
