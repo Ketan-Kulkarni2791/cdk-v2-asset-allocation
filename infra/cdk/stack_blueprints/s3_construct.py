@@ -87,5 +87,6 @@ class S3Construct:
         policy_statement.add_actions("s3:ListBucket")
         policy_statement.add_actions("s3:GetBucketLocation")
         policy_statement.add_actions("s3:GetObject")
-        policy_statement.add_resources(s3_bucket_arns)
+        policy_statement.add_resources(f"{s3_bucket_arns}")
+        policy_statement.add_resources(f"{s3_bucket_arns}/*")
         return policy_statement
