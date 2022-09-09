@@ -14,6 +14,7 @@ from .s3_construct import S3Construct
 from .lambda_construct import LambdaConstruct
 from .lambda_layer_construct import LambdaLayerConstruct
 from .sns_construct import SNSConstruct
+from .stepfunction_construct import StepFunctionConstruct
 
 
 class MainProjectStack(aws_cdk.Stack):
@@ -84,13 +85,13 @@ class MainProjectStack(aws_cdk.Stack):
         )
 
         # Step Function Infra Creation -------------------------------------------
-        # MainProjectStack.create_step_function(
-        #     stack=stack,
-        #     config=config,
-        #     # env=env,
-        #     kms_key=kms_key,
-        #     lambdas=lambdas
-        # )
+        MainProjectStack.create_step_function(
+            stack=stack,
+            config=config,
+            # env=env,
+            kms_key=kms_key,
+            lambdas=lambdas
+        )
 
     @staticmethod
     def setup_sns_topic(
@@ -320,3 +321,41 @@ class MainProjectStack(aws_cdk.Stack):
             function=function,
             event_type=s3.EventType.OBJECT_CREATED
         )
+
+    @staticmethod
+    def create_step_function(
+        stack: aws_cdk.Stack,
+        config: dict,
+        sns_topic: sns.Topic,
+        kms_key: kms.Key,
+        lambdas: Dict[str, _lambda.Function]) -> None:
+        """Create step function and necessary IAM role with input lambda."""
+
+        state_machine_policy = IAMConstruct.create_managed_policy(
+            stack=stack,
+            config=config,
+            policy_name="stateMachine",
+            statements=[
+                StepFunctionConstruct.get_sfn_lambda_invoke_job_policy_statement(config),
+                KMSConstruct.get_kms_key_encrypt_decrypt_policy([kms_key.key_arn]),
+                SNSConstruct.get_sns_publish_policy(sns_topic.topic_arn)
+            ]
+        )
+        state_machine_role = IAMConstruct.create_role(
+            stack=stack,
+            config=config,
+            role_name="stateMachine",
+            assumed_by=['states']
+        )
+        state_machine_role.add_managed_policy(state_machine_policy)
+
+        StepFunctionConstruct.create_step_function(
+            stack=stack,
+            config=config,
+            role=state_machine_role,
+            pl_1_lambda=lambdas["pl_1_lambda"],
+            pl_2_lambda=lambdas["pl_2_lambda"],
+            clear_files_alert_lambda=lambdas["clear_files_alert_lambda"],
+            sns_topic=sns_topic
+        )
+        
