@@ -19,7 +19,8 @@ class StepFunctionConstruct:
             pl_1_lambda: _lambda.Function,
             pl_2_lambda: _lambda.Function,
             clear_files_alert_lambda: _lambda.Function,
-            sns_topic: sns.Topic) -> sfn.StateMachine:
+            sns_topic: sns.Topic
+        ) -> sfn.StateMachine:
         """Create Step Function for Asset Allocation Data Load."""
 
         # Step function's failure, success and choice state ----------------------------------
