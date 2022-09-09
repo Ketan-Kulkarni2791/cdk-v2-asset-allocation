@@ -147,7 +147,7 @@ class StepFunctionConstruct:
             config: dict,
             log_group_name: str) -> aws_logs.LogGroup:
         """Function to create log groups for StepFunction."""
-        return aws_logs.LogGrou(
+        return aws_logs.LogGroup(
             scope=stack,
             id=f"{config['global']['app-name']}-LogGroup",
             log_group_name=f"{config['global']['app-name']}-{log_group_name}"
