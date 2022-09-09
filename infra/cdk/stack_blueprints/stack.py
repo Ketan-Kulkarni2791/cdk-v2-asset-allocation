@@ -324,11 +324,11 @@ class MainProjectStack(aws_cdk.Stack):
 
     @staticmethod
     def create_step_function(
-        stack: aws_cdk.Stack,
-        config: dict,
-        sns_topic: sns.Topic,
-        kms_key: kms.Key,
-        lambdas: Dict[str, _lambda.Function]) -> None:
+            stack: aws_cdk.Stack,
+            config: dict,
+            sns_topic: sns.Topic,
+            kms_key: kms.Key,
+            lambdas: Dict[str, _lambda.Function]) -> None:
         """Create step function and necessary IAM role with input lambda."""
 
         state_machine_policy = IAMConstruct.create_managed_policy(
@@ -357,5 +357,4 @@ class MainProjectStack(aws_cdk.Stack):
             pl_2_lambda=lambdas["pl_2_lambda"],
             clear_files_alert_lambda=lambdas["clear_files_alert_lambda"],
             sns_topic=sns_topic
-        )
-        
+        )      

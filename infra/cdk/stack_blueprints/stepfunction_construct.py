@@ -1,5 +1,4 @@
 """Code for generating Stepfunction resources, including tasks, retries, errors etc."""
-from email import message
 import aws_cdk
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_sns as sns
@@ -7,6 +6,7 @@ import aws_cdk.aws_lambda as _lambda
 import aws_cdk.aws_stepfunctions as sfn
 import aws_cdk.aws_stepfunctions_tasks as sfn_tasks
 import aws_cdk.aws_logs as aws_logs
+
 
 class StepFunctionConstruct:
     """Class has methods to create a step function."""
@@ -18,7 +18,7 @@ class StepFunctionConstruct:
             role: iam.Role,
             pl_1_lambda: _lambda.Function,
             pl_2_lambda: _lambda.Function,
-            clear_files_on_alert_lambda: _lambda.Function,
+            clear_files_alert_lambda: _lambda.Function,
             sns_topic: sns.Topic) -> sfn.StateMachine:
         """Create Step Function for Asset Allocation Data Load."""
 
@@ -44,7 +44,7 @@ class StepFunctionConstruct:
         clear_files_on_alert_lambda_task = StepFunctionConstruct.create_lambda_task(
             stack=stack,
             task_def="Clear Files on Alert Lambda",
-            task_lambda=clear_files_on_alert_lambda,
+            task_lambda=clear_files_alert_lambda,
             result_key="$.output"
         )
 
@@ -91,7 +91,6 @@ class StepFunctionConstruct:
             role=role,
             tracing_enabled=True
         )
-        
 
     @staticmethod
     def create_succeeded_state(stack: aws_cdk.Stack, config: dict) -> sfn.Succeed:
@@ -143,7 +142,7 @@ class StepFunctionConstruct:
     @staticmethod
     def create_sfn_log_group(
             stack: aws_cdk.Stack,
-            config:dict,
+            config: dict,
             log_group_name: str) -> aws_logs.LogGroup:
         """Function to create log groups for StepFunction."""
         return aws_logs.LogGrou(
@@ -159,5 +158,4 @@ class StepFunctionConstruct:
         policy_statement.effect = iam.Effect.ALLOW
         policy_statement.add_actions("lambda:InvokeFunction")
         policy_statement.add_resources(config['global']['lambdaFunctionArnBase'])
-        return policy_statement
-        
+        return policy_statement  
