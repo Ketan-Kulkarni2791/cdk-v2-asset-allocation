@@ -11,7 +11,7 @@ import aws_cdk.aws_logs as aws_logs
 class StepFunctionConstruct:
     """Class has methods to create a step function."""
 
-    # pylint: disable-msg=too-many-locals
+    # pylint: disable=too-many-locals,too-many-arguments
     @staticmethod
     def create_step_function(
             stack: aws_cdk.Stack,
