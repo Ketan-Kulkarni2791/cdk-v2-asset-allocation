@@ -145,10 +145,18 @@ class MainProjectStack(aws_cdk.Stack):
         """Method to create layers."""
         layers = {}
         # requirement layer for general ----------------------------------------------------
-        layers["requirement_layer"] = LambdaLayerConstruct.create_lambda_layer(
+        layers["pandas"] = LambdaLayerConstruct.create_lambda_layer(
             stack=stack,
             config=config,
-            layer_name="requirement_layer",
+            layer_name="pandas_layer",
+            compatible_runtimes=[
+                _lambda.Runtime.PYTHON_3_8
+            ]
+        )
+        layers["psycopg2"] = LambdaLayerConstruct.create_lambda_layer(
+            stack=stack,
+            config=config,
+            layer_name="psycopg2_layer",
             compatible_runtimes=[
                 _lambda.Runtime.PYTHON_3_8
             ]
@@ -161,7 +169,7 @@ class MainProjectStack(aws_cdk.Stack):
             config: dict,
             kms_key: kms.Key,
             sns_topic: sns.Topic,
-            layer: Dict[str, _lambda.LayerVersion] = None) -> Dict[str, _lambda.Function]:
+            layers: Dict[str, _lambda.LayerVersion] = None) -> Dict[str, _lambda.Function]:
         """Create placeholder lambda function and roles."""
 
         lambdas = {}
@@ -200,7 +208,7 @@ class MainProjectStack(aws_cdk.Stack):
             lambda_name="validation_trigger_lambda",
             role=validation_trigger_role,
             sns_arn=sns_topic.topic_arn,
-            layer=[layer["requirement_layer"]],
+            layer=[layers["pandas"]],
             memory_size=3008
         )
 
@@ -229,7 +237,7 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             lambda_name="pl_1_lambda",
             role=pl_1_role,
-            layer=None,
+            layer=[layers["psycopg2"]],
             memory_size=3008
         )
 
