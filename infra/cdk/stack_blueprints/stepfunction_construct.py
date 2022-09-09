@@ -11,6 +11,7 @@ import aws_cdk.aws_logs as aws_logs
 class StepFunctionConstruct:
     """Class has methods to create a step function."""
 
+    # pylint: disable-msg=too-many-locals
     @staticmethod
     def create_step_function(
             stack: aws_cdk.Stack,
@@ -20,7 +21,7 @@ class StepFunctionConstruct:
             pl_2_lambda: _lambda.Function,
             clear_files_alert_lambda: _lambda.Function,
             sns_topic: sns.Topic
-        ) -> sfn.StateMachine:
+    ) -> sfn.StateMachine:
         """Create Step Function for Asset Allocation Data Load."""
 
         # Step function's failure, success and choice state ----------------------------------
