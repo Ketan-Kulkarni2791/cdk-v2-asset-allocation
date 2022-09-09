@@ -72,7 +72,7 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             # env=env,
             kms_key=kms_key,
-            layer=layer,
+            layers=layer,
             sns_topic=sns_topic
         )
 
