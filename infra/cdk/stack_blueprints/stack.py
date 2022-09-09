@@ -90,7 +90,8 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             # env=env,
             kms_key=kms_key,
-            lambdas=lambdas
+            lambdas=lambdas,
+            sns_topic=sns_topic
         )
 
     @staticmethod
