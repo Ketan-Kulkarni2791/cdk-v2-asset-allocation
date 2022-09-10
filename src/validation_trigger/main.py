@@ -31,8 +31,8 @@ def get_csv_content_from_s3(s3_bucket, key):
     file_obj = s3_client.get_object(Bucket=s3_bucket, Key=key)
     file_content = file_obj["Body"].read()
     read_csv_data = io.BytesIO(file_content)
-    df = pd.read_csv(read_csv_data)
-    return df
+    input_df = pd.read_csv(read_csv_data)
+    return input_df
 
 
 def lambda_handler(event: dict, _context: dict) -> dict:
@@ -52,7 +52,7 @@ def lambda_handler(event: dict, _context: dict) -> dict:
 
             input_df = get_csv_content_from_s3(s3_bucket, file_key)
             print(input_df)            
-            
+
             return {
                 'Success': "Event found"
             }
