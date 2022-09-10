@@ -43,7 +43,7 @@ def error_files_mover():
         path, file = os.path.split(bucket_object.key)
         copy_source_object = {
             'Bucket': bucket_name,
-            'Key': f"""{path/file}"""
+            'Key': f"""{path}/{file}"""
         }
         if file == "":
             continue
@@ -54,7 +54,7 @@ def error_files_mover():
         )
         s3_client.delete_object(
             Bucket=bucket_name,
-            Key=f"""{path/file}"""
+            Key=f"""{path}/{file}"""
         )
     return "Success"
 
