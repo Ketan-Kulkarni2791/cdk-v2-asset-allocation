@@ -34,6 +34,7 @@ def get_csv_content_from_s3(s3_bucket, key):
     input_df = pd.read_csv(read_csv_data)
     return input_df
 
+
 def error_files_mover():
     bucket = s3.Bucket(bucket_name)
     final_source_key = source_key
@@ -46,16 +47,15 @@ def error_files_mover():
         }
         if file == "":
             continue
-        else:
-            s3_client.copy_object(
-                CopySource=copy_source_object,
-                Bucket=bucket_name,
-                Key=f"""{dest_key}/{file}"""
-            )
-            s3_client.delete_object(
-                Bucket=bucket_name,
-                Key=f"""{path/file}"""
-            )
+        s3_client.copy_object(
+            CopySource=copy_source_object,
+            Bucket=bucket_name,
+            Key=f"""{dest_key}/{file}"""
+        )
+        s3_client.delete_object(
+            Bucket=bucket_name,
+            Key=f"""{path/file}"""
+        )
     return "Success"
 
 
@@ -89,12 +89,12 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                 amt_type_col_actuals = ['invest_pct', 'taa_pct', 'saa_pct']
                 amt_type_col_fetched = pd.unique(input_df['amount_type']).tolist()
 
-                if (all(i in amt_type_col_fetched for i in amt_type_col_actuals)):
+                if all(i in amt_type_col_fetched for i in amt_type_col_actuals):
                     data_actuals = [10.0, 10.0, 10.0]
                     data_fetched = input_df.groupby("amount_type")["amount"].sum()
                     data_fetched = [float("{0:.2f}".format(i)) for i in data_fetched]
 
-                    if (all(i in data_fetched for i in data_actuals)):
+                    if all(i in data_fetched for i in data_actuals):
                         input_message_to_sfn = {
                             'file_name': file_name,
                             'folder_name': f"asset_allocation_data/{folder_name}",
