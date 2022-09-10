@@ -9,10 +9,10 @@ Returns-
 import os
 # import io
 # import json
-import uuid
+import logging
+# import uuid
 # import pandas as pd
 import boto3
-import logging
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -33,6 +33,7 @@ dest_key = os.environ['error_folder']
 #     df = pd.read_csv(read_csv_data)
 #     return df
 
+
 def lambda_handler(event: dict, _context: dict) -> dict:
     """Main lambda handler for Incoming Data to S3 Transform Location Lambda."""
 
@@ -40,7 +41,7 @@ def lambda_handler(event: dict, _context: dict) -> dict:
     if event:
         try:
             logging.info("This is the event we received: %s", event)
-            identifier = str(uuid.uuid1())
+            # identifier = str(uuid.uuid1())
             return {
                 'Success': "Event found"
             }
