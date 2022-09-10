@@ -26,8 +26,9 @@ bucket_name = os.environ['bucket_name']
 source_key = os.environ['trigger_prefix']
 dest_key = os.environ['error_folder']
 
-def get_csv_content_from_s3(bucket_name, key):
-    file_obj = s3_client.get_object(Bucket=bucket_name, Key=key)
+
+def get_csv_content_from_s3(s3_bucket, key):
+    file_obj = s3_client.get_object(Bucket=s3_bucket, Key=key)
     file_content = file_obj["Body"].read()
     read_csv_data = io.BytesIO(file_content)
     df = pd.read_csv(read_csv_data)
@@ -43,14 +44,14 @@ def lambda_handler(event: dict, _context: dict) -> dict:
             logging.info("This is the event we received: %s", event)
             # identifier = str(uuid.uuid1())
             folder_name = event['Records'][0]['s3']['object']['key']
-            folder_name.split('/')[-2]
+            folder_name = folder_name.split('/')[-2]
             file_key = event['Records'][0]['s3']['object']['key']
-            file_name = file_key.split('/')[-1]
-            etag = event['Records'][0]['s3']['object']['eTag']
+            # file_name = file_key.split('/')[-1]
+            # etag = event['Records'][0]['s3']['object']['eTag']
             s3_bucket = event['Records'][0]['s3']['bucket']['name']
 
-            df = get_csv_content_from_s3(s3_bucket, file_key)
-            print(df)            
+            input_df = get_csv_content_from_s3(s3_bucket, file_key)
+            print(input_df)            
             
             return {
                 'Success': "Event found"
