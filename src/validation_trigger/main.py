@@ -42,6 +42,8 @@ def lambda_handler(event: dict, _context: dict) -> dict:
         try:
             logging.info("This is the event we received: %s", event)
             # identifier = str(uuid.uuid1())
+            folder_name = event['Records'][0]['s3']['object']['key']
+            print(f"------------ folder_name : {folder_name}")
             return {
                 'Success': "Event found"
             }
