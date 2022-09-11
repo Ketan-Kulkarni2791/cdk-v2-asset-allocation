@@ -90,7 +90,7 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                 amt_type_col_fetched = pd.unique(input_df['amount_type']).tolist()
 
                 if all(i in amt_type_col_fetched for i in amt_type_col_actuals):
-                    data_actuals = [10.0, 10.0, 10.0]
+                    data_actuals = [9.9, 9.9, 9.9]
                     data_fetched = input_df.groupby("amount_type")["amount"].sum()
                     data_fetched = [float("{0:.2f}".format(i)) for i in data_fetched]
 
