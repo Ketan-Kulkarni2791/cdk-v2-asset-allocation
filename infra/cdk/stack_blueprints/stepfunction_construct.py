@@ -84,6 +84,7 @@ class StepFunctionConstruct:
         return sfn.StateMachine(
             scope=stack,
             id=f"{config['global']['appNameShort']}-stateMachine-Id",
+            state_machine_name=f"{config['global']['appNameShort']}-stateMachine",
             logs=sfn.LogOptions(
                 destination=log_group,
                 include_execution_data=True,
