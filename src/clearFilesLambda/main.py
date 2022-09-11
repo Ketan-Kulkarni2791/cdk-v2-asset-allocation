@@ -19,8 +19,8 @@ dest_key = os.environ['error_folder']
 
 def error_files_mover():
     s3_client = boto3.client("s3")
-    s3 = boto3.resource("s3")
-    bucket = s3.Bucket(bucket_name)
+    s3_resource = boto3.resource("s3")
+    bucket = s3_resource.Bucket(bucket_name)
     final_source_key = "asset_allocation_data" + source_key
 
     for bucket_object in bucket.objects.filter(Prefix=final_source_key):
