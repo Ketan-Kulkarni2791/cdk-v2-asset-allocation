@@ -88,6 +88,7 @@ class MainProjectStack(aws_cdk.Stack):
         MainProjectStack.create_step_function(
             stack=stack,
             config=config,
+            # env=env,
             kms_key=kms_key,
             lambdas=lambdas,
             sns_topic=sns_topic
