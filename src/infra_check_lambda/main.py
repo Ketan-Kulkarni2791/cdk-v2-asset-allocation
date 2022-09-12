@@ -36,6 +36,10 @@ def lambda_handler(event: dict, _context: dict) -> dict:
             database = os.environ['database']
             file_name = event['file_name']
             file_date = file_name.split('.')[0].split('_')[1]
+            file_date = str(
+                datetime.strptime(
+                    file_date, "%m%d%y"
+                )).split(' ')[0]
             year, month, day = file_date.split(
                 '-')[0], file_date.split('-')[1], file_date.split('-')[2]
             # folder_name = event['folder_name']
