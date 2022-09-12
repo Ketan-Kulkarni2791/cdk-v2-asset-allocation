@@ -52,7 +52,7 @@ def database_exists(db_name: str, region_name: str) -> bool:
     :param region_name: String -> of the region in the AWS Glue database
     :return: bool
     """
- 
+
     try:
         client = boto3.client('glue', region_name=region_name)
         response = client.get_databases()
@@ -174,7 +174,8 @@ def create_and_update_partitions(
         version_number: str, data_file_s3_location: str, region_name: str) -> None:
     """Create partition if does not exist for input date, update partition if it does."""
 
-    final_partition_location = f"""s3://{bucket}/{data_file_s3_location}/yyyy={year}/mm={month}/dd={day}/version_number={version_number}"""
+    final_partition_location = f"""s3://{bucket}/{data_file_s3_location}/yyyy={year}/
+                               mm={month}/dd={day}/version_number={version_number}"""
     glue = boto3.client('glue', region_name=region_name)
 
     # Need to check if partition already exists.

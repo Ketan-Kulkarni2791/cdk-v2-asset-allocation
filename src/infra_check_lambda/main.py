@@ -6,14 +6,15 @@ Returns-
     [dict]:
 
 """
-# pylint: disable=unused-import,unused-variable
+# pylint: disable=unused-import,unused-variable,unused-local-variable
 import os
 import logging
 from datetime import datetime
 import boto3
 
 from code_lib.decorators import log_methods_non_sensitive
-from code_lib.glue_utils import database_exists, create_database, create_table, table_exists, create_and_update_partitions
+from code_lib.glue_utils import (database_exists, create_database, create_table, 
+                                 table_exists, create_and_update_partitions)
 from code_lib.table_schema import TableSchemas
 
 logging.getLogger().setLevel(logging.INFO)
