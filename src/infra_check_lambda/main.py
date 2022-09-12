@@ -6,14 +6,15 @@ Returns-
     [dict]:
 
 """
+# pylint: disable=unused-import,unused-variable
 import os
 import logging
-import boto3
 from datetime import datetime
+import boto3
 
 from code_lib.decorators import log_methods_non_sensitive
 from code_lib.glue_utils import database_exists, create_database, create_table, table_exists, create_and_update_partitions
-from code_lib.table_schema import tableSchemas
+from code_lib.table_schema import TableSchemas
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -56,13 +57,13 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                 if not database_exists(database, region):
                     create_database(database, region)
                     create_table(
-                        database, asset_alloc_table, region, tableSchemas.asset_alloc_data,
+                        database, asset_alloc_table, region, TableSchemas.asset_alloc_data,
                         asset_alloc_table_location, bucket
                     )
                 else:
                     if not table_exists(database, asset_alloc_table, region):
                         create_table(
-                            database, asset_alloc_table, region, tableSchemas.asset_alloc_data,
+                            database, asset_alloc_table, region, TableSchemas.asset_alloc_data,
                             asset_alloc_table_location, bucket
                         )
 

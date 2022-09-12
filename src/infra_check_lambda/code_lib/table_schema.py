@@ -1,7 +1,7 @@
 """Module for Storing the Schema Description for Asset Allocation Tables."""
 
 
-class tableSchemas:
+class TableSchemas:
     """Storing the schemas of the various tables."""
     taa_saa_paa_metadata = [
         {'Name': 'file_name', 'Type': 'varchar'},

@@ -69,7 +69,4 @@ def log_method_sensitive(method: Any) -> Any:
         LOGGER.info(log_entry)
         return result
 
-    return wrap        
-        
-        
-        
+    return wrap   

@@ -29,5 +29,5 @@ class GlueConstruct:
         policy_statement.add_resources(config['global']['catalogArn'])
         policy_statement.add_resources(config['global']['glueDatabaseArn'])
         policy_statement.add_resources(config['global']['datasetTableArn'])
-        
+
         return policy_statement

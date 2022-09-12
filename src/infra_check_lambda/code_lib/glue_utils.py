@@ -3,7 +3,6 @@ from email.message import Message
 import logging
 import os
 import copy
-from urllib import response
 import boto3
 from botocore.exceptions import ClientError
 
@@ -13,6 +12,7 @@ sns_client = boto3.client("sns")
 
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
+
 
 @log_methods_non_sensitive
 def table_exists(db_name: str, tb_name: str, region_name: str) -> bool:
@@ -28,7 +28,8 @@ def table_exists(db_name: str, tb_name: str, region_name: str) -> bool:
     """
     try:
         client = boto3.client('glue', region_name=region_name)
-        responseGetTable = client.get_table(DatabaseName=db_name, Name=tb_name)
+        response_get_table = client.get_table(DatabaseName=db_name, Name=tb_name)
+        print(response_get_table)
         return True
     except ClientError as error:
         if error.response['Error']['Code'] == "EntityNotFoundException":
@@ -43,6 +44,7 @@ def table_exists(db_name: str, tb_name: str, region_name: str) -> bool:
         LOGGER.error(f"""Error in reading Glue table due to : {error}""")
         raise error
 
+
 @log_methods_non_sensitive
 def database_exists(db_name: str, region_name: str) -> bool:
     """Check if database exists in the given region.
@@ -50,7 +52,7 @@ def database_exists(db_name: str, region_name: str) -> bool:
     :param region_name: String -> of the region in the AWS Glue database
     :return: bool
     """
-    
+ 
     try:
         client = boto3.client('glue', region_name=region_name)
         response = client.get_databases()
@@ -69,6 +71,7 @@ def database_exists(db_name: str, region_name: str) -> bool:
         )
         LOGGER.error("Error in getting Glue database: %s", error)
         raise error
+
 
 @log_methods_non_sensitive
 def create_database(db_name: str, region_name: str) -> None:
@@ -91,13 +94,14 @@ def create_database(db_name: str, region_name: str) -> None:
         LOGGER.error("Error in Creating Glue database: %s", error)
         raise error
 
+
 @log_methods_non_sensitive
 def create_table(db_name: str, 
-                    table_name: dict, 
-                    region_name: str,
-                    column: list,
-                    location: str,
-                    bucket: str) -> None:
+                 table_name: dict, 
+                 region_name: str,
+                 column: list,
+                 location: str,
+                 bucket: str) -> None:
     """Create table in the given database and region.
     :param db_name: String -> of Database name in AWS Glue
     :param table_name: dict -> of table in AWS Glue
@@ -158,15 +162,16 @@ def create_table(db_name: str,
             subject = f"""{region_name}-Asset Allocation Load: Classification Lambda failed."""
             sns_client.publish(
                 TopicArn=os.environ['sns_arn'],
-                Message=f"""Classification lambda failed due to : {error}""",
+                Message=f"""Classification lambda failed due to : {err}""",
                 subject=subject
             )
         else:
             raise err
 
+
 def create_and_update_partitions(
-    bucket: str, database: str, table: str, year: str, month: str, day: str, version_number: str,
-    data_file_s3_location: str, region_name: str) -> None:
+        bucket: str, database: str, table: str, year: str, month: str, day: str,
+        version_number: str, data_file_s3_location: str, region_name: str) -> None:
     """Create partition if does not exist for input date, update partition if it does."""
 
     final_partition_location = f"""s3://{bucket}/{data_file_s3_location}/yyyy={year}/mm={month}/dd={day}/version_number={version_number}"""
@@ -211,8 +216,4 @@ def create_and_update_partitions(
                 'Values': partition_values,
                 'StorageDescriptor': custom_storage_descriptor
             }
-        )
-    
-    
-        
-        
+        )      

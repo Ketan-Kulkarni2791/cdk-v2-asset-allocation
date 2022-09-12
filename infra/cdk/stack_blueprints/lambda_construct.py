@@ -144,6 +144,4 @@ class LambdaConstruct:
     #         f"{config['global']['awsAccount']}:dbuser:"
     #         f"{config['global']['rs_cluster_id']}/{config['global']['rs_user']}"
     #     )
-    #     return policy_statement
-        
-        
+    #     return policy_statement   
