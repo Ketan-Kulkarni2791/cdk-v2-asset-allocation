@@ -15,6 +15,7 @@ from .lambda_construct import LambdaConstruct
 from .lambda_layer_construct import LambdaLayerConstruct
 from .sns_construct import SNSConstruct
 from .stepfunction_construct import StepFunctionConstruct
+from .glue_construct import GlueConstruct
 
 
 class MainProjectStack(aws_cdk.Stack):
@@ -213,32 +214,39 @@ class MainProjectStack(aws_cdk.Stack):
         )
 
         # Placeholder Lambda 1. ----------------------------------------------------
-        pl_1_lambda_policy = IAMConstruct.create_managed_policy(
+        infra_check_lambda_policy = IAMConstruct.create_managed_policy(
             stack=stack,
             config=config,
-            policy_name="pl_1_lambda",
+            policy_name="infra_check_lambda",
             statements=[
                 LambdaConstruct.get_cloudwatch_policy(
-                    config['global']['pl_1_lambdaLogsArn']
-                )
+                    config['global']['infra_check_lambdaLogsArn']
+                ),
+                S3Construct.get_s3_object_policy(config["global"]["bucket_arn"]),
+                LambdaConstruct.get_ec2_policy(),
+                # LambdaConstruct.get_redshift_policy(config=config),
+                GlueConstruct.get_glue_policy(config),
+                KMSConstruct.get_kms_key_encrypt_decrypt_policy([kms_key.key_arn]),
+                SNSConstruct.get_sns_publish_policy(sns_topic.topic_arn)
             ]
         )
 
-        pl_1_role = IAMConstruct.create_role(
+        infra_check_role = IAMConstruct.create_role(
             stack=stack,
             config=config,
-            role_name="pl_1_lambda",
-            assumed_by=['sqs', 'lambda', 'sns']
+            role_name="infra_check_lambda",
+            assumed_by=['lambda', 'sns']
         )
-        pl_1_role.add_managed_policy(pl_1_lambda_policy)
+        infra_check_role.add_managed_policy(infra_check_lambda_policy)
 
-        lambdas["pl_1_lambda"] = LambdaConstruct.create_lambda(
+        lambdas["infra_check_lambda"] = LambdaConstruct.create_lambda(
             stack=stack,
             config=config,
-            lambda_name="pl_1_lambda",
-            role=pl_1_role,
+            lambda_name="infra_check_lambda",
+            role=infra_check_role,
             layer=[layers["psycopg2"]],
-            memory_size=3008
+            memory_size=3008,
+            duration=aws_cdk.Duration.minutes(amount=15)
         )
 
         # Placeholder Lambda 2. ----------------------------------------------------
@@ -362,7 +370,7 @@ class MainProjectStack(aws_cdk.Stack):
             stack=stack,
             config=config,
             role=state_machine_role,
-            pl_1_lambda=lambdas["pl_1_lambda"],
+            infra_check_lambda=lambdas["infra_check_lambda"],
             pl_2_lambda=lambdas["pl_2_lambda"],
             clear_files_alert_lambda=lambdas["clear_files_alert_lambda"],
             sns_topic=sns_topic

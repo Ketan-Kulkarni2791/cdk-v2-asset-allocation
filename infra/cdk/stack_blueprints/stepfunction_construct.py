@@ -17,7 +17,7 @@ class StepFunctionConstruct:
             stack: aws_cdk.Stack,
             config: dict,
             role: iam.Role,
-            pl_1_lambda: _lambda.Function,
+            infra_check_lambda: _lambda.Function,
             pl_2_lambda: _lambda.Function,
             clear_files_alert_lambda: _lambda.Function,
             sns_topic: sns.Topic
@@ -53,13 +53,13 @@ class StepFunctionConstruct:
         red_alert.next(clear_files_on_alert_lambda_task).next(failure)
 
         # Lambda 1 ------------------------------------------------------------------------
-        pl_1_lambda_task = StepFunctionConstruct.create_lambda_task(
+        infra_check_lambda_task = StepFunctionConstruct.create_lambda_task(
             stack=stack,
-            task_def="Placeholder Lambda 1",
-            task_lambda=pl_1_lambda,
+            task_def="infra check lambda",
+            task_lambda=infra_check_lambda,
             result_key="$.output"
         )
-        pl_1_lambda_task.add_catch(red_alert, result_path="$.Error")
+        infra_check_lambda_task.add_catch(red_alert, result_path="$.Error")
 
         # Lambda 2 ------------------------------------------------------------------------
         pl_2_lambda_task = StepFunctionConstruct.create_lambda_task(
@@ -71,7 +71,7 @@ class StepFunctionConstruct:
         pl_2_lambda_task.add_catch(red_alert, result_path="$.Error")
 
         # StepFunction Definition --------------------------------------------------------
-        definition = pl_1_lambda_task.next(pl_2_lambda_task).next(succeeded)
+        definition = infra_check_lambda_task.next(pl_2_lambda_task).next(succeeded)
 
         # StepFunction Log Group ---------------------------------------------------------
         log_group = StepFunctionConstruct.create_sfn_log_group(
