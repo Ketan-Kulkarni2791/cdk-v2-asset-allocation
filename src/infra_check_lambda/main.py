@@ -6,7 +6,7 @@ Returns-
     [dict]:
 
 """
-# pylint: disable=unused-import,unused-variable,unused-local-variable
+# pylint: disable=unused-import,unused-variable
 import os
 import logging
 from datetime import datetime
@@ -32,15 +32,16 @@ def lambda_handler(event: dict, _context: dict) -> dict:
         try:
             logging.info("This is the event we received: %s", event)
             region = os.environ['region']
-            env = os.environ['env']
+            # env = os.environ['env']
             database = os.environ['database']
             file_name = event['file_name']
             file_date = file_name.split('.')[0].split('_')[1]
             year, month, day = file_date.split(
                 '-')[0], file_date.split('-')[1], file_date.split('-')[2]
-            folder_name = event['folder_name']
-            etag = event['etag']
-            insertion_date = str(datetime.now()).split(' ')[0]
+            # folder_name = event['folder_name']
+            # etag = event['etag']
+            # insertion_date = str(datetime.now()).split(' ')[0]
+            print(year, month, day)
 
             asset_alloc_table = os.environ['asset_alloc_table']
             asset_alloc_table_location = os.environ['asset_alloc_table_location']
