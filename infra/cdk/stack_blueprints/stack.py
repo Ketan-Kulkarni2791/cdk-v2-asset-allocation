@@ -274,7 +274,7 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             lambda_name="classifier_lambda",
             role=classifier_role,
-            layer=None,
+            layer=[layers["pandas"]],
             memory_size=3008
         )
 
