@@ -250,30 +250,30 @@ class MainProjectStack(aws_cdk.Stack):
         )
 
         # Placeholder Lambda 2. ----------------------------------------------------
-        pl_2_lambda_policy = IAMConstruct.create_managed_policy(
+        classifier_lambda_policy = IAMConstruct.create_managed_policy(
             stack=stack,
             config=config,
-            policy_name="pl_2_lambda",
+            policy_name="classifier_lambda",
             statements=[
                 LambdaConstruct.get_cloudwatch_policy(
-                    config['global']['pl_2_lambdaLogsArn']
+                    config['global']['classifier_lambdaLogsArn']
                 )
             ]
         )
 
-        pl_2_role = IAMConstruct.create_role(
+        classifier_role = IAMConstruct.create_role(
             stack=stack,
             config=config,
-            role_name="pl_2_lambda",
+            role_name="classifier_lambda",
             assumed_by=['sqs', 'lambda', 'sns']
         )
-        pl_2_role.add_managed_policy(pl_2_lambda_policy)
+        classifier_role.add_managed_policy(classifier_lambda_policy)
 
-        lambdas["pl_2_lambda"] = LambdaConstruct.create_lambda(
+        lambdas["classifier_lambda"] = LambdaConstruct.create_lambda(
             stack=stack,
             config=config,
-            lambda_name="pl_2_lambda",
-            role=pl_2_role,
+            lambda_name="classifier_lambda",
+            role=classifier_role,
             layer=None,
             memory_size=3008
         )
@@ -371,7 +371,7 @@ class MainProjectStack(aws_cdk.Stack):
             config=config,
             role=state_machine_role,
             infra_check_lambda=lambdas["infra_check_lambda"],
-            pl_2_lambda=lambdas["pl_2_lambda"],
+            classifier_lambda=lambdas["classifier_lambda"],
             clear_files_alert_lambda=lambdas["clear_files_alert_lambda"],
             sns_topic=sns_topic
         )      

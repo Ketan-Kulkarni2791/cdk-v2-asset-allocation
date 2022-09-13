@@ -18,7 +18,7 @@ class StepFunctionConstruct:
             config: dict,
             role: iam.Role,
             infra_check_lambda: _lambda.Function,
-            pl_2_lambda: _lambda.Function,
+            classifier_lambda: _lambda.Function,
             clear_files_alert_lambda: _lambda.Function,
             sns_topic: sns.Topic
     ) -> sfn.StateMachine:
@@ -62,16 +62,16 @@ class StepFunctionConstruct:
         infra_check_lambda_task.add_catch(red_alert, result_path="$.Error")
 
         # Lambda 2 ------------------------------------------------------------------------
-        pl_2_lambda_task = StepFunctionConstruct.create_lambda_task(
+        classifier_lambda_task = StepFunctionConstruct.create_lambda_task(
             stack=stack,
             task_def="Placeholder Lambda 2",
-            task_lambda=pl_2_lambda,
+            task_lambda=classifier_lambda,
             result_key="$.output"
         )
-        pl_2_lambda_task.add_catch(red_alert, result_path="$.Error")
+        classifier_lambda_task.add_catch(red_alert, result_path="$.Error")
 
         # StepFunction Definition --------------------------------------------------------
-        definition = infra_check_lambda_task.next(pl_2_lambda_task).next(succeeded)
+        definition = infra_check_lambda_task.next(classifier_lambda_task).next(succeeded)
 
         # StepFunction Log Group ---------------------------------------------------------
         log_group = StepFunctionConstruct.create_sfn_log_group(
