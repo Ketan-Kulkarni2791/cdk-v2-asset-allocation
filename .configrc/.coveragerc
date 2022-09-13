@@ -1,0 +1,6 @@
+[run]
+omit = */UnitTests/*
+    */__*
+    */Unit_Tests/*
+    */tests/*
+    */stack_tests/*
