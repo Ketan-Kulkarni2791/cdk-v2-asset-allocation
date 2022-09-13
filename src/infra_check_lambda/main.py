@@ -32,7 +32,6 @@ def lambda_handler(event: dict, _context: dict) -> dict:
         try:
             logging.info("This is the event we received: %s", event)
             region = os.environ['region']
-            # env = os.environ['env']
             database = os.environ['database']
             file_name = event['file_name']
             file_date = file_name.split('.')[0].split('_')[1]
