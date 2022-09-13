@@ -10,9 +10,9 @@ Returns-
 import os
 import logging
 import io
+from datetime import datetime
 import boto3
 import pandas as pd
-from datetime import datetime
 
 logging.getLogger().setLevel(logging.INFO)
 
@@ -40,8 +40,8 @@ def lambda_handler(event: dict, _context: dict) -> dict:
             file_date = file_name.split('.')[0].split('_')[1]
             file_date = str(datetime.strptime(file_date, "%m%d%y")).split(' ')[0]
             folder_name = event['folder_name']
-            env = os.environ['env']
-            region = os.environ['region']
+            # env = os.environ['env']
+            # region = os.environ['region']
             year, month, day = file_date.split('-')[0], file_date.split('-')[1], file_date.split('-')[2]
             etag = event['etag']
 
@@ -64,7 +64,7 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                 "etag": etag,
                 "stage": "metadata update"
             }
-            
+
             return event
         # In case an error is encountered even when a correct event is present ---------
         except Exception as error:

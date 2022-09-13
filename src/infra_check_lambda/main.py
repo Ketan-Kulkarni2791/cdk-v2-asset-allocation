@@ -32,7 +32,7 @@ def lambda_handler(event: dict, _context: dict) -> dict:
         try:
             logging.info("This is the event we received: %s", event)
             region = os.environ['region']
-            env = os.environ['env']
+            # env = os.environ['env']
             database = os.environ['database']
             file_name = event['file_name']
             file_date = file_name.split('.')[0].split('_')[1]
@@ -79,10 +79,13 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                     'file_name': file_name,
                     "file_version": file_version,
                     "folder_name": folder_name,
-                    "etag": etag
+                    "etag": etag,
+                    "insertion_date": insertion_date
                 }
 
                 return event
+            else:
+                return {"Status": "Not Infra Check"}
         # In case an error is encountered even when a correct event is present ---------
         except Exception as error:
             logging.error("An error occurred: %s", error)
