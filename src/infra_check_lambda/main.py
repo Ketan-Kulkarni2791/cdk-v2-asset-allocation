@@ -32,7 +32,7 @@ def lambda_handler(event: dict, _context: dict) -> dict:
         try:
             logging.info("This is the event we received: %s", event)
             region = os.environ['region']
-            # env = os.environ['env']
+            env = os.environ['env']
             database = os.environ['database']
             file_name = event['file_name']
             file_date = file_name.split('.')[0].split('_')[1]
@@ -42,9 +42,9 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                 )).split(' ')[0]
             year, month, day = file_date.split(
                 '-')[0], file_date.split('-')[1], file_date.split('-')[2]
-            # folder_name = event['folder_name']
-            # etag = event['etag']
-            # insertion_date = str(datetime.now()).split(' ')[0]
+            folder_name = event['folder_name']
+            etag = event['etag']
+            insertion_date = str(datetime.now()).split(' ')[0]
             print(year, month, day)
 
             asset_alloc_table = os.environ['asset_alloc_table']
@@ -60,6 +60,8 @@ def lambda_handler(event: dict, _context: dict) -> dict:
 
             if stage == 'infra check':
 
+                file_version = 1
+
                 if not database_exists(database, region):
                     create_database(database, region)
                     create_table(
@@ -73,9 +75,14 @@ def lambda_handler(event: dict, _context: dict) -> dict:
                             asset_alloc_table_location, bucket
                         )
 
-            return {
-                'Success': "Event found"
-            }
+                event = {
+                    'file_name': file_name,
+                    "file_version": file_version,
+                    "folder_name": folder_name,
+                    "etag": etag
+                }
+
+                return event
         # In case an error is encountered even when a correct event is present ---------
         except Exception as error:
             logging.error("An error occurred: %s", error)

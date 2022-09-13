@@ -6,6 +6,7 @@ Returns-
     [dict]:
 
 """
+# pylint: disable=unused-import,unused-variable
 import os
 import logging
 import io
