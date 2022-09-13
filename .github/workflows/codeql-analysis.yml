@@ -27,7 +27,7 @@ jobs:
     permissions:
       actions: read
       contents: read
-      security-event: write
+      security-events: write
 
     strategy:
       fail-fast: false
