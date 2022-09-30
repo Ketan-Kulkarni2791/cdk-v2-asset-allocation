@@ -50,7 +50,7 @@ class TestGlueConstruct(unittest.TestCase):
             call(self.config['glueDatabaseArn']),
             call(self.config['datasetTableArn']),
         ]
-        GlueConstruct.get_glue_policy(self.high_level_config, self.config['env'])
+        GlueConstruct.get_glue_policy(self.high_level_config)
 
         iam.PolicyStatement.assert_called_once_with()
         iam.PolicyStatement.return_value_add_actions.assert_has_calls(action_calls, any_order=True)
